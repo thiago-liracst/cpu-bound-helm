@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: cpu-bound-namespace
+  labels:
+    environment: production
+    app: app
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      environment: production
+      app: app
+  template:
+    metadata:
+      labels:
+        environment: production
+        app: app
+    spec:
+      containers:
+      - name: main-app
+        image: {{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}
+        resources:
+          requests:
+            cpu: {{ .Values.app.resources.requests.cpu }}
+            memory: {{ .Values.app.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.app.resources.limits.cpu }}
+            memory: {{ .Values.app.resources.limits.memory }}
+  strategy:
+    type: {{ .Values.app.strategy.type }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.app.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.app.strategy.rollingUpdate.maxSurge }}

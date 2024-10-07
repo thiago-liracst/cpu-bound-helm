@@ -1,0 +1,43 @@
+app:
+  image:
+    repository: antoniontv/app
+    tag: latest
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
+service:
+  type: NodePort
+  ports:
+    nodePort: 32500
+    protocol: TCP
+    port: 8000
+    targetPort: 8000
+
+hpa:
+  spec:
+    minReplicas: 3
+    maxReplicas: 9
+    metrics:
+      type1: Resource
+      resource1:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+      type2: Resource
+      resource2:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 50

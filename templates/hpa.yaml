@@ -1,0 +1,25 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}
+  namespace: cpu-bound-namespace
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app-deployment
+  minReplicas: {{ .Values.hpa.spec.minReplicas }}
+  maxReplicas: {{ .Values.hpa.spec.maxReplicas }}
+  metrics:
+  - type: {{ .Values.hpa.spec.metrics.type1 }}
+    resource:
+      name: {{ .Values.hpa.spec.metrics.resource1.name }}
+      target:
+        type: {{ .Values.hpa.spec.metrics.resource1.target.type }}
+        averageUtilization: {{ .Values.hpa.spec.metrics.resource1.target.averageUtilization }}
+  - type: {{ .Values.hpa.spec.metrics.type2 }}
+    resource:
+      name: {{ .Values.hpa.spec.metrics.resource2.name }}
+      target:
+        type: {{ .Values.hpa.spec.metrics.resource2.target.type }}
+        averageUtilization: {{ .Values.hpa.spec.metrics.resource2.target.averageUtilization }}
